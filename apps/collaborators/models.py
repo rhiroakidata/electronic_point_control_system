@@ -6,6 +6,7 @@ from mongoengine import (
     DateTimeField,
     EmailField,
     StringField,
+    IntField
 )
 
 # Apps
@@ -23,5 +24,5 @@ class Collaborator(db.Document):
     email = EmailField(required=True, unique=True)
     password = StringField(required=True)
     cpf = StringField(default='')
-    rf = StringField(required=True, default='')
+    rf = IntField(required=True, default='')
     created = DateTimeField(default=datetime.now)

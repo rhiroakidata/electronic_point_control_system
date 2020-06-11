@@ -3,6 +3,7 @@
 from mongoengine import (
     BooleanField,
     StringField,
+    IntField
 )
 
 # Apps
@@ -60,11 +61,11 @@ class TestCollaborator:
         """
         assert self.model._fields['rf'].required is True
         
-    def test_rf_field_is_str(self):
+    def test_rf_field_is_int(self):
         """
-        Verifico se o campo rf é do tipo string
+        Verifico se o campo rf é do tipo int
         """
-        assert isinstance(self.model._fields['rf'], StringField)
+        assert isinstance(self.model._fields['rf'], IntField)
 
     def test_name_field_exists(self):
         """

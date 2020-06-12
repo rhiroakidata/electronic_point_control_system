@@ -20,7 +20,7 @@ def check_password_in_signup(password: str, confirm_password: str):
 
 def get_collaborator_by_rf(rf: str):
     try:
-        # buscamos todos os usuários da base utilizando o paginate
+        # Fetch collaborator by rf
         return Collaborator.objects.get(rf=rf)
 
     except DoesNotExist:

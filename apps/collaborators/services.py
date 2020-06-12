@@ -19,17 +19,15 @@ from apps.responses import (
     resp_data_invalid,
     resp_ok
 )
-from apps.messages import (
-    MSG_NO_DATA,
-    MSG_PASSWORD_WRONG,
-    MSG_INVALID_DATA
-)
 
 from apps.messages import (
     MSG_RESOURCE_CREATED,
     MSG_RESOURCE_FETCHED_LISTED,
     MSG_RESOURCE_FETCHED,
-    MSG_RESOURCE_DELETED
+    MSG_RESOURCE_DELETED,
+    MSG_NO_DATA,
+    MSG_PASSWORD_WRONG,
+    MSG_INVALID_DATA
 )
 
 # Local
@@ -103,7 +101,6 @@ class CollaboratorsServices(Resource):
         try:
             # Fetch all collaborators
             collaborators = Collaborator.objects()
-            print(type(collaborators))
 
         except FieldDoesNotExist as e:
             return resp_exception('CollaboratorsServices', description=e.__str__())

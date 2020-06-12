@@ -7,13 +7,26 @@ from mongoengine import (
     EmailField,
     StringField,
     IntField,
-    BooleanField
+    BooleanField,
+    EmbeddedDocumentField,
 )
 
 # Apps
 from apps.db import db
 
-class Collaborator(db.Document):
+
+class CollaboratorBase(db.Document):
+    """
+    Default implementation for Collaborator
+    """
+    meta = {
+        'abstract': True
+    }
+
+    rf = IntField(required=True, default='')
+
+
+class Collaborator(CollaboratorBase):
     
     '''
     Collaborator
@@ -25,8 +38,7 @@ class Collaborator(db.Document):
     email = EmailField(required=True, unique=True)
     password = StringField(required=True)
     cpf = StringField(default='')
-    rf = IntField(required=True, default='')
-    active = BooleanField(default=False)
+    active = BooleanField(default=True)
     created = DateTimeField(default=datetime.now)
     
     def is_active(self):

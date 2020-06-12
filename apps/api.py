@@ -7,7 +7,8 @@ from apps.collaborators.services import (
     CollaboratorServices
 )
 from apps.points.services import (
-    PointsServices
+    PointsServices,
+    PointServices
 )
 
 # Instance of FlaskRestful API
@@ -24,6 +25,9 @@ def configure_api(app):
     
     # Points routes
     api.add_resource(PointsServices, '/points')
+    
+    # Point routes
+    api.add_resource(PointServices, '/collaborators/<int:rf>/points/<string:point_id>')
     
     # Initialize api with settings came from app
     api.init_app(app)

@@ -23,7 +23,10 @@ from apps.messages import (
     MSG_PASSWORD_WRONG,
     MSG_INVALID_DATA
 )
-from apps.utils import get_collaborator_by_rf
+from apps.utils import (
+    get_collaborator_by_rf,
+    get_point_by_rf_id
+)
 
 # Local
 from .models import Point
@@ -92,3 +95,51 @@ class PointsServices(Resource):
             MSG_RESOURCE_FETCHED_LISTED.format('pontos'),
             data=result.data
         )
+
+class PointServices(Resource):
+    
+    def get(self, rf, point_id):
+        result = None
+        schema = PointSchema()
+
+        point = get_point_by_rf_id(rf=rf, point_id=point_id)
+        
+        if not isinstance(point, Point):
+            return point
+
+        result = schema.dump(point)
+
+        return resp_ok(
+            'PointServices',
+            MSG_RESOURCE_FETCHED.format('Ponto'),
+            data=result.data
+        )
+        
+    def delete(self, rf, point_id):
+        # Fetch point by rf
+        point = get_point_by_rf_id(rf, point_id)
+
+        if not isinstance(point, Point):
+            return point
+
+        try:
+            point.active = False
+            point.save()
+
+        except ValidationError as e:
+            return resp_exception(
+                        'PointServices',
+                        msg=MSG_INVALID_DATA,
+                        description=e.__str__()
+                    )
+
+        except Exception as e:
+            return resp_exception(
+                        'PointServices',
+                        description=e.__str__()
+                    )
+
+        return resp_ok(
+                    'PointServices',
+                    MSG_RESOURCE_DELETED.format('Ponto')
+                )

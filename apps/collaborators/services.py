@@ -129,7 +129,9 @@ class CollaboratorServices(Resource):
         result = schema.dump(collaborator)
 
         return resp_ok(
-            'ColaboratorServices', MSG_RESOURCE_FETCHED.format('Colaborador'),  data=result.data
+            'ColaboratorServices',
+            MSG_RESOURCE_FETCHED.format('Colaborador'),
+            data=result.data
         )
         
     def delete(self, rf):

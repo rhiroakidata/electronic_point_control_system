@@ -24,6 +24,10 @@ class CollaboratorBase(db.Document):
     }
 
     rf = IntField(required=True, default='')
+    active = BooleanField(default=True)
+    
+    def is_active(self):
+        return self.active
 
 
 class Collaborator(CollaboratorBase):
@@ -38,8 +42,4 @@ class Collaborator(CollaboratorBase):
     email = EmailField(required=True, unique=True)
     password = StringField(required=True)
     cpf = StringField(default='')
-    active = BooleanField(default=True)
     created = DateTimeField(default=datetime.now)
-    
-    def is_active(self):
-        return self.active

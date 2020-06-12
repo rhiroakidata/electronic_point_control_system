@@ -10,6 +10,7 @@ from flask import request
 from flask_restful import Resource
 from bcrypt import gensalt, hashpw
 from mongoengine.errors import NotUniqueError, ValidationError
+from mongoengine.errors import FieldDoesNotExist
 
 # Apps
 from apps.responses import (
@@ -19,7 +20,7 @@ from apps.responses import (
     resp_ok
 )
 from apps.messages import MSG_NO_DATA, MSG_PASSWORD_WRONG, MSG_INVALID_DATA
-from apps.messages import MSG_RESOURCE_CREATED
+from apps.messages import MSG_RESOURCE_CREATED, MSG_RESOURCE_FETCHED_LISTED
 
 # Local
 from .models import Collaborator
@@ -27,7 +28,7 @@ from .schemas import CollaboratorRegistrationSchema, CollaboratorSchema
 from apps.utils import check_password_in_signup
 
 
-class SignUp(Resource):
+class CollaboratorsList(Resource):
     def post(self, *args, **kwargs):
         # Initialize variables
         #print(request.json)
@@ -69,18 +70,42 @@ class SignUp(Resource):
             model.save()
 
         except NotUniqueError:
-            return resp_already_exists('Collaborators', 'fornecedor')
+            return resp_already_exists('CollaboratorsList', 'colaborador')
 
         except ValidationError as e:
-            return resp_exception('Collaborators', msg=MSG_INVALID_DATA, description=e)
+            return resp_exception('CollaboratorsList', msg=MSG_INVALID_DATA, description=e)
 
         except Exception as e:
-            return resp_exception('Collaborators', description=e)
+            return resp_exception('CollaboratorsList', description=e)
 
         # Dump data of model
         schema = CollaboratorSchema()
         result = schema.dump(model)
 
         return resp_ok(
-            'Collaborators', MSG_RESOURCE_CREATED.format('Colaborador'),  data=result.data,
+            'CollaboratorsList', MSG_RESOURCE_CREATED.format('Colaborador'),  data=result.data,
+        )
+    
+    def get(self):
+        # Initialize schema
+        schema = CollaboratorSchema(many=True)
+        
+        try:
+            # Fetch all collaborators
+            collaborators = Collaborator.objects()
+            print(type(collaborators))
+
+        except FieldDoesNotExist as e:
+            return resp_exception('CollaboratorsList', description=e.__str__())
+
+        except Exception as e:
+            return resp_exception('CollaboratorsList', description=e.__str__())
+
+        # Dump objects returned
+        result = schema.dump(collaborators)
+
+        return resp_ok(
+            'CollaboratorsList',
+            MSG_RESOURCE_FETCHED_LISTED.format('colaboradores'),
+            data=result.data
         )

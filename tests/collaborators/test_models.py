@@ -82,7 +82,7 @@ class TestCollaborator:
         """
         fields = [
             'rf', 'cpf', 'created', 'email',
-            'name', 'id', 'password'
+            'name', 'id', 'password', 'active'
         ]
 
         model_keys = [i for i in self.model._fields.keys()]

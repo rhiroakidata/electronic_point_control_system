@@ -6,7 +6,8 @@ from mongoengine import (
     DateTimeField,
     EmailField,
     StringField,
-    IntField
+    IntField,
+    BooleanField
 )
 
 # Apps
@@ -25,4 +26,8 @@ class Collaborator(db.Document):
     password = StringField(required=True)
     cpf = StringField(default='')
     rf = IntField(required=True, default='')
+    active = BooleanField(default=False)
     created = DateTimeField(default=datetime.now)
+    
+    def is_active(self):
+        return self.active

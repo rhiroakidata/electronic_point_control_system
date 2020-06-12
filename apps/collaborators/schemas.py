@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from marshmallow import Schema
-from marshmallow.fields import Email, Str, Int
+from marshmallow.fields import Email, Str, Int, Boolean
 
 from apps.messages import MSG_FIELD_REQUIRED
 
@@ -37,3 +37,4 @@ class CollaboratorSchema(Schema):
     )
     cpf = Str()
     rf = Str()
+    active = Boolean()

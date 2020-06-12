@@ -28,13 +28,14 @@ from apps.messages import (
 from apps.messages import (
     MSG_RESOURCE_CREATED,
     MSG_RESOURCE_FETCHED_LISTED,
-    MSG_RESOURCE_FETCHED
+    MSG_RESOURCE_FETCHED,
+    MSG_RESOURCE_DELETED
 )
 
 # Local
 from .models import Collaborator
 from .schemas import CollaboratorRegistrationSchema, CollaboratorSchema
-from apps.utils import check_password_in_signup
+from apps.utils import check_password_in_signup, get_collaborator_by_rf
 
 
 class CollaboratorsServices(Resource):
@@ -126,18 +127,45 @@ class CollaboratorServices(Resource):
         result = None
         schema = CollaboratorSchema()
 
-        try:
-            # Fetching collaborator by id
-            collaborator = Collaborator.objects.get(rf=rf)
-
-        except FieldDoesNotExist as e:
-            return resp_exception('CollaboratorServices', description=e.__str__())
-
-        except Exception as e:
-            return resp_exception('CollaboratorServices', description=e.__str__())
+        collaborator = get_collaborator_by_rf(rf=rf)
 
         result = schema.dump(collaborator)
 
         return resp_ok(
             'ColaboratorServices', MSG_RESOURCE_FETCHED.format('Colaborador'),  data=result.data
         )
+        
+    def delete(self, rf):
+        # Fetch collaborator by rf
+        collaborator = get_collaborator_by_rf(rf)
+
+        if not isinstance(collaborator, Collaborator):
+            return collaborator
+
+        try:
+            collaborator.active = False
+            collaborator.save()
+
+        except NotUniqueError:
+            return resp_already_exists(
+                        'CollaboratorServices',
+                        'colaborador'
+                    )
+
+        except ValidationError as e:
+            return resp_exception(
+                        'CollaboratorServices',
+                        msg=MSG_INVALID_DATA,
+                        description=e.__str__()
+                    )
+
+        except Exception as e:
+            return resp_exception(
+                        'CollaboratorServices',
+                        description=e.__str__()
+                    )
+
+        return resp_ok(
+                    'CollaboratorServices',
+                    MSG_RESOURCE_DELETED.format('Colaborador')
+                )

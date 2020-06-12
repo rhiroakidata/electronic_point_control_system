@@ -19,8 +19,17 @@ from apps.responses import (
     resp_data_invalid,
     resp_ok
 )
-from apps.messages import MSG_NO_DATA, MSG_PASSWORD_WRONG, MSG_INVALID_DATA
-from apps.messages import MSG_RESOURCE_CREATED, MSG_RESOURCE_FETCHED_LISTED
+from apps.messages import (
+    MSG_NO_DATA,
+    MSG_PASSWORD_WRONG,
+    MSG_INVALID_DATA
+)
+
+from apps.messages import (
+    MSG_RESOURCE_CREATED,
+    MSG_RESOURCE_FETCHED_LISTED,
+    MSG_RESOURCE_FETCHED
+)
 
 # Local
 from .models import Collaborator
@@ -28,7 +37,7 @@ from .schemas import CollaboratorRegistrationSchema, CollaboratorSchema
 from apps.utils import check_password_in_signup
 
 
-class CollaboratorsList(Resource):
+class CollaboratorsServices(Resource):
     def post(self, *args, **kwargs):
         # Initialize variables
         #print(request.json)
@@ -40,7 +49,7 @@ class CollaboratorsList(Resource):
 
         # When datas are null
         if req_data is None:
-            return resp_data_invalid('Collaborators', [], msg=MSG_NO_DATA)
+            return resp_data_invalid('CollaboratorsServices', [], msg=MSG_NO_DATA)
 
         password = req_data.get('password', None)
         confirm_password = req_data.pop('confirm_password', None)
@@ -50,14 +59,14 @@ class CollaboratorsList(Resource):
         # Verify passwords provided
         if not check_password_in_signup(password, confirm_password):
             errors = {'password': MSG_PASSWORD_WRONG}
-            return resp_data_invalid('Collaborators', errors)
+            return resp_data_invalid('CollaboratorsServices', errors)
 
         # Desserialize data
         data, errors = schema.load(req_data)
 
         # Return invalid response when there is a error
         if errors:
-            return resp_data_invalid('Collaborators', errors)
+            return resp_data_invalid('CollaboratorsServices', errors)
 
         # Create hash
         hashed = hashpw(password.encode('utf-8'), gensalt(12))
@@ -70,20 +79,20 @@ class CollaboratorsList(Resource):
             model.save()
 
         except NotUniqueError:
-            return resp_already_exists('CollaboratorsList', 'colaborador')
+            return resp_already_exists('CollaboratorsServices', 'colaborador')
 
         except ValidationError as e:
-            return resp_exception('CollaboratorsList', msg=MSG_INVALID_DATA, description=e)
+            return resp_exception('CollaboratorsServices', msg=MSG_INVALID_DATA, description=e)
 
         except Exception as e:
-            return resp_exception('CollaboratorsList', description=e)
+            return resp_exception('CollaboratorsServices', description=e)
 
         # Dump data of model
         schema = CollaboratorSchema()
         result = schema.dump(model)
 
         return resp_ok(
-            'CollaboratorsList', MSG_RESOURCE_CREATED.format('Colaborador'),  data=result.data,
+            'CollaboratorsServices', MSG_RESOURCE_CREATED.format('Colaborador'),  data=result.data,
         )
     
     def get(self):
@@ -96,16 +105,39 @@ class CollaboratorsList(Resource):
             print(type(collaborators))
 
         except FieldDoesNotExist as e:
-            return resp_exception('CollaboratorsList', description=e.__str__())
+            return resp_exception('CollaboratorsServices', description=e.__str__())
 
         except Exception as e:
-            return resp_exception('CollaboratorsList', description=e.__str__())
+            return resp_exception('CollaboratorsServices', description=e.__str__())
 
         # Dump objects returned
         result = schema.dump(collaborators)
 
         return resp_ok(
-            'CollaboratorsList',
+            'CollaboratorsServices',
             MSG_RESOURCE_FETCHED_LISTED.format('colaboradores'),
             data=result.data
+        )
+
+
+class CollaboratorServices(Resource):
+    
+    def get(self, rf):
+        result = None
+        schema = CollaboratorSchema()
+
+        try:
+            # Fetching collaborator by id
+            collaborator = Collaborator.objects.get(rf=rf)
+
+        except FieldDoesNotExist as e:
+            return resp_exception('CollaboratorServices', description=e.__str__())
+
+        except Exception as e:
+            return resp_exception('CollaboratorServices', description=e.__str__())
+
+        result = schema.dump(collaborator)
+
+        return resp_ok(
+            'ColaboratorServices', MSG_RESOURCE_FETCHED.format('Colaborador'),  data=result.data
         )

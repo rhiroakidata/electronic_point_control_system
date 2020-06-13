@@ -1,14 +1,24 @@
+# Python
+from datetime import datetime
+import json
+
 # Flask
 from flask import request
 
 # Third
 from flask_restful import Resource
-from mongoengine.errors import NotUniqueError, ValidationError
-from mongoengine.errors import FieldDoesNotExist
+from mongoengine.errors import (
+    NotUniqueError,
+    ValidationError,
+    DoesNotExist,
+    FieldDoesNotExist
+)
+from mongoengine.queryset.visitor import Q
 
 # Apps
 from apps.responses import (
     resp_already_exists,
+    resp_does_not_exist,
     resp_exception,
     resp_data_invalid,
     resp_ok
@@ -143,3 +153,63 @@ class PointServices(Resource):
                     'PointServices',
                     MSG_RESOURCE_DELETED.format('Ponto')
                 )
+        
+
+class ReportService(Resource) :
+    def get(self, rf, month_id):        
+        try:
+            # Fetch point by rf
+            points = Point.objects(
+                Q(date__contains=month_id) & Q(rf=rf)
+            ).order_by('date')
+            
+        except DoesNotExist:
+            return resp_does_not_exist('PointServices', 'ponto')
+
+        except FieldDoesNotExist as e:
+            return resp_exception('PointServices', description=e.__str__())
+
+        except Exception as e:
+            return resp_exception('PointServices', description=e.__str__())
+
+        # It will be auxiliar for changing date
+        # Convert string to datetime
+        staticDate = datetime.strptime(points.first().date, '%Y-%m-%d').date()
+        result = {}
+        hoursPerDay = 0
+        hoursPerMonth = 0
+        for point in range(0, points.count()):
+            date = datetime.strptime(
+                points[point].date, '%Y-%m-%d'
+            ).date()
+
+            if (date != staticDate):
+                print('Entrei')
+                staticDate = date
+                hoursPerDay=0
+            
+            if point%2 == 0:
+                punchIn = datetime.strptime(
+                    points[point].time, '%H:%M:%S'
+                ).hour
+            else:
+                punchOut = datetime.strptime(
+                    points[point].time, '%H:%M:%S'
+                ).hour
+
+            if point%2 == 1:
+                hoursPerDay = hoursPerDay + (punchOut-punchIn)
+                
+                # Take work hours per day,
+                # Convert datetime to string
+                result["Day " + date.strftime('%Y-%m-%d')] = hoursPerDay
+                
+                hoursPerMonth = hoursPerMonth + punchOut - punchIn
+        
+        result["Month " + month_id] = hoursPerMonth
+        return resp_ok(
+            'ReportService',
+            MSG_RESOURCE_FETCHED.format('Relatorio'),
+            result
+        )
+        

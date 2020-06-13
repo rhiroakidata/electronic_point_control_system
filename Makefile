@@ -32,5 +32,5 @@ isort:
 test:
 	pytest --verbose --color=yes
 
-run: test
+run:
 	python application.py

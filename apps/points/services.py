@@ -184,7 +184,6 @@ class ReportService(Resource) :
             ).date()
 
             if (date != staticDate):
-                print('Entrei')
                 staticDate = date
                 hoursPerDay=0
             

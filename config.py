@@ -6,18 +6,18 @@ class Config:
     SECRET_KEY = getenv('SECRET_KEY') or 'so big secret pontotel key'
     APP_PORT = int(getenv('APP_PORT', 5000))
     DEBUG = getenv('DEBUG') or False
-    MONGODB_HOST = getenv('MONGODB_URI', 'mongodb://localhost:27017/api-pontotel')
 
 
 class DevelopmentConfig(Config):
     FLASK_ENV = 'development'
     DEBUG = True
+    MONGODB_HOST = getenv('MONGODB_URI', 'mongodb://localhost:27017/api-pontotel')
 
 
 class TestingConfig(Config):
     FLASK_ENV = 'testing'
     TESTING = True
-    MONGODB_HOST = getenv('MONGODB_URI_TEST')
+    MONGODB_HOST = getenv('MONGODB_URI_TEST', 'mongodb://localhost:27017/api-pontotel-test')
 
 
 config = {

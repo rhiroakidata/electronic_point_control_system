@@ -32,10 +32,10 @@ def get_collaborator_by_rf(rf: str):
     except Exception as e:
         return resp_exception('ColaboratorServices', description=e.__str__())
 
-def get_point_by_rf_id(rf: str, point_id: int):
+def get_point_by_id(point_id: int):
     try:
         # Fetch point by rf
-        return Point.objects.get(rf=rf, id=point_id)
+        return Point.objects.get(id=point_id)
 
     except DoesNotExist:
         return resp_does_not_exist('PointServices', 'ponto')

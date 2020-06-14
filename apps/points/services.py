@@ -35,7 +35,7 @@ from apps.messages import (
 )
 from apps.utils import (
     get_collaborator_by_rf,
-    get_point_by_rf_id
+    get_point_by_id
 )
 
 # Local
@@ -108,11 +108,11 @@ class PointsServices(Resource):
 
 class PointServices(Resource):
     
-    def get(self, rf, point_id):
+    def get(self, point_id):
         result = None
         schema = PointSchema()
 
-        point = get_point_by_rf_id(rf=rf, point_id=point_id)
+        point = get_point_by_id(point_id=point_id)
         
         if not isinstance(point, Point):
             return point
@@ -125,9 +125,9 @@ class PointServices(Resource):
             data=result.data
         )
         
-    def delete(self, rf, point_id):
+    def delete(self, point_id):
         # Fetch point by rf
-        point = get_point_by_rf_id(rf, point_id)
+        point = get_point_by_id(point_id=point_id)
 
         if not isinstance(point, Point):
             return point

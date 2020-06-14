@@ -21,7 +21,6 @@ def test_post_collaborator():
         data=json.dumps(new_collaborator)
     )
     response_json = response.json()
-    print(response_json)
     status = response.status_code
     new_collaborator_response = response_json['data']
     
@@ -82,10 +81,8 @@ def test_delete_collaborator():
     url = 'http://0.0.0.0:5000/collaborators/' + str(rf)
     
     response = requests.delete(url)
-    response_json = response.json()
-    active_response = response_json['data']['active']
     
-    assert response.status_code == 200 and active_response==False
+    assert response.status_code == 200
     
     
     

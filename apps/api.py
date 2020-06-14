@@ -28,7 +28,7 @@ def configure_api(app):
     api.add_resource(PointsServices, '/points')
     
     # Point routes
-    api.add_resource(PointServices, '/collaborators/<int:rf>/points/<string:point_id>')
+    api.add_resource(PointServices, '/points/<string:point_id>')
     
     # Report
     api.add_resource(ReportService, '/collaborators/<int:rf>/month/<string:month_id>')

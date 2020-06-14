@@ -72,9 +72,30 @@ class TestCollaborator:
         Verifico se o campo name existe
         """
         assert 'name' in self.model._fields
+        
+    def test_name_field_is_required(self):
+        """
+        Verifico se o campo name é requirido
+        """
+        assert self.model._fields['name'].required is True
 
     def test_name_field_is_str(self):
         assert isinstance(self.model._fields['name'], StringField)
+        
+    def test_password_field_exists(self):
+        """
+        Verifico se o campo password existe
+        """
+        assert 'password' in self.model._fields
+        
+    def test_password_field_is_required(self):
+        """
+        Verifico se o campo password é requirido
+        """
+        assert self.model._fields['password'].required is True
+
+    def test_password_field_is_str(self):
+        assert isinstance(self.model._fields['password'], StringField)
 
     def test_all_fields_in_model(self):
         """

@@ -24,7 +24,7 @@ setup(
     license='MIT',
     description=__description__,
     long_description=__long_description__,
-    url='https://github.com/rhiroakidata/desafio_pontotel.git',
+    url='https://github.com/rhiroakidata/electronic_point_control_system.git',
     keywords='API, MongoDB',
     include_package_data=True,
     zip_safe=False,

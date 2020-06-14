@@ -11,6 +11,7 @@ from apps.points.services import (
     PointServices,
     ReportService
 )
+from apps.bonus.services import MaskServices
 
 # Instance of FlaskRestful API
 api = Api()
@@ -32,6 +33,9 @@ def configure_api(app):
     
     # Report
     api.add_resource(ReportService, '/collaborators/<int:rf>/month/<string:month_id>')
+    
+    # Bonus Computer Vision
+    api.add_resource(MaskServices, '/mask-detector')
     
     # Initialize api with settings came from app
     api.init_app(app)

@@ -77,47 +77,60 @@ docker run -itd --name api_pontotel_latest -p 5001:5000  -e SECRET_KEY=hard-secr
 
 This topic is optional, here explain how to prepare your Operational System and Virtual Environment for running mask detector. Well, let`s start!
 
-1. First update your Ubuntu System
+First update your Ubuntu System
 ```
 sudo apt-get update
+```
+```
 sudo apt-get upgrade
 ```
 
-2. Install image and video I/O libraries and useful packages
+Install image and video I/O libraries and useful packages
 ```
 sudo apt-get install build-essential cmake unzip pkg-config
-
+```
+```
 sudo apt-get install libxmu-dev libxi-dev libglu1-mesa libglu1-mesa-dev
-
+```
+```
 sudo apt-get install libjpeg-dev libpng-dev libtiff-dev
-
+```
+```
 sudo apt-get install libavcodec-dev libavformat-dev libswscale-dev libv4l-dev
-
+```
+```
 sudo apt-get install libxvidcore-dev libx264-dev
-
+```
+```
 sudo apt-get install libgtk-3-dev
-
+```
+```
 sudo apt-get install libopenblas-dev libatlas-base-dev liblapack-dev gfortran
-
+```
+```
 sudo apt-get install libhdf5-serial-dev
-
+```
+```
 sudo apt-get install python3-dev python3-tk python-imaging-tk
+```
 
-3. Install Python libraries
+Install Python libraries
 ```
 pip install numpy
-
+```
+```
 pip install opencv-contrib-python
-
+```
+```
 pip install imutils
 ```
 
-4. Install Tensorflow
+Install Tensorflow
 ```
 pip install tensorflow
 ```
 
-5. Enable the route and service
+Enable the route and service
 
 Uncomment this file /media/hiroaki/DATA/workspace/electronic_point_control_system/apps/bonus/services.py
 

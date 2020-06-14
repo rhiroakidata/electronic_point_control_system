@@ -34,8 +34,10 @@ def configure_api(app):
     # Report
     api.add_resource(ReportService, '/collaborators/<int:rf>/month/<string:month_id>')
     
-    # Bonus Computer Vision
-    api.add_resource(MaskServices, '/mask-detector')
+    # # Bonus Computer Vision
+    # If you want to test this route, follow
+    # the topic Additional in README.md 
+    # api.add_resource(MaskServices, '/mask-detector')
     
     # Initialize api with settings came from app
     api.init_app(app)

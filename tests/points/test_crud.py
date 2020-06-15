@@ -1,5 +1,9 @@
 import requests, json
 
+from apps.messages import (
+    MSG_ALREADY_EXISTS
+)
+
 def test_post_point():
     headers = {
         'Accept': '*/*',
@@ -99,3 +103,27 @@ def test_report():
     list_size = len(response_json['data'])
     
     assert status == 200 and list_size > 0
+
+def test_invalid_post():
+    headers = {
+        'Accept': '*/*',
+        'User-agent': 'request',
+    }
+    
+    new_point = {
+        "date": "",
+        "time": "",
+        "rf": ""
+    }
+    
+    url = 'http://0.0.0.0:5000/points'
+    
+    response = requests.post(
+        url,
+        headers=headers,
+        data=json.dumps(new_point)
+    )
+    response_json = response.json()
+    status = response.status_code
+    
+    assert status == 422  

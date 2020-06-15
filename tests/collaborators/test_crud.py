@@ -1,5 +1,9 @@
 import requests, json
 
+from apps.messages import (
+    MSG_ALREADY_EXISTS
+)
+
 def test_post_collaborator():
     headers = {
         'Accept': '*/*',
@@ -84,5 +88,85 @@ def test_delete_collaborator():
     
     assert response.status_code == 200
     
+def test_invalid_post():
+    headers = {
+        'Accept': '*/*',
+        'User-agent': 'request',
+    }
     
+    new_collaborator = {
+        "name": "",
+        "email": "",
+        "password": "",
+        "confirm_password": ""
+    }
     
+    url = 'http://0.0.0.0:5000/collaborators'
+    
+    response = requests.post(
+        url,
+        headers=headers,
+        data=json.dumps(new_collaborator)
+    )
+    response_json = response.json()
+    status = response.status_code
+    
+    assert status == 422
+    
+def test_unmatch_password():
+    headers = {
+        'Accept': '*/*',
+        'User-agent': 'request',
+    }
+    
+    new_collaborator = {
+        "name": "Nome teste",
+        "email": "emailteste@gmail.com",
+        "password": "654321",
+        "confirm_password": "123456"
+    }
+    
+    url = 'http://0.0.0.0:5000/collaborators'
+    
+    response = requests.post(
+        url,
+        headers=headers,
+        data=json.dumps(new_collaborator)
+    )
+    response_json = response.json()
+    status = response.status_code
+    
+    assert status == 422
+
+def test_already_exists():
+    headers = {
+        'Accept': '*/*',
+        'User-agent': 'request',
+    }
+    
+    new_collaborator = {
+        "name": "Teste",
+        "email": "testeemail@gmail.com",
+        "password": "123456",
+        "confirm_password": "123456"
+    }
+    
+    url = 'http://0.0.0.0:5000/collaborators'
+    
+    response = requests.post(
+        url,
+        headers=headers,
+        data=json.dumps(new_collaborator)
+    )
+    
+    response = requests.post(
+        url,
+        headers=headers,
+        data=json.dumps(new_collaborator)
+    )
+    response_json = response.json()
+    status = response.status_code
+    message = response_json['message']
+    
+    assert (status == 400 
+            and message==MSG_ALREADY_EXISTS.format('colaborador'))   

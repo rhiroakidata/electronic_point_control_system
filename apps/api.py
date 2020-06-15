@@ -11,7 +11,7 @@ from apps.points.services import (
     PointServices,
     ReportService
 )
-from apps.bonus.services import MaskServices
+# from apps.bonus.services import MaskServices
 
 # Instance of FlaskRestful API
 api = Api()
